@@ -28,7 +28,7 @@ class Solution:
         frequency_for_protocol = utils.get_frequency_for_protocol(self.protocol_json_path)
         ans = []
         for protocol, count in count_map.items():
-            if count > frequency_for_protocol.get(protocol):
+            if count != frequency_for_protocol.get(protocol):
                 ans.append(protocol)
         print(ans)
         return ans

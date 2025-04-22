@@ -1,6 +1,9 @@
 from typing import List
-
 import utils
+
+PROTOCOL_ID = 2
+MESSAGE_BYTE = 3
+MESSAGE_DATA = -1
 
 
 class Solution:
@@ -15,7 +18,7 @@ class Solution:
             for line in file:
                 first_line = line.strip()
                 break
-        first_line = first_line.split(",")[-1]
+        first_line = first_line.split(",")[MESSAGE_DATA]
         version_name = bytes.fromhex(first_line.replace(" ", "")).decode("ASCII")
         return version_name
 
@@ -41,7 +44,6 @@ class Solution:
         return ans
 
 
-
     # Question 4: Which protocols appear in the data file but are not listed as relevant for the version?
     def q4(self) -> List[str]:
         ans = []
@@ -59,9 +61,9 @@ class Solution:
             next(file)
             for line in file:
                 line = line.strip()
-                protocol = line.split(",")[2].replace(" ", "")
-                byte_msg = line.split(",")[3].replace(" ", "").replace("bytes","")
-                msg = line.split(",")[-1]
+                protocol = line.split(",")[PROTOCOL_ID].replace(" ", "")
+                byte_msg = line.split(",")[MESSAGE_BYTE].replace(" ", "").replace("bytes","")
+                msg = line.split(",")[MESSAGE_DATA]
                 msg = msg.split(" ")
                 if len(msg[1:]) != int(byte_msg):
                     ans.append(protocol)
@@ -75,8 +77,8 @@ class Solution:
             next(file)
             for line in file:
                 line = line.strip()
-                protocol = line.split(",")[2].replace(" ", "")
-                byte_msg = line.split(",")[3].replace(" ", "").replace("bytes","")
+                protocol = line.split(",")[PROTOCOL_ID].replace(" ", "")
+                byte_msg = line.split(",")[MESSAGE_BYTE].replace(" ", "").replace("bytes","")
                 if not protocol in protocols_bytes_in_session.keys():
                     protocols_bytes_in_session[protocol] = set(byte_msg)
                 else:

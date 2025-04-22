@@ -6,17 +6,30 @@ frequency_map = {"1": 1,
                  "36": 164
                 }
 
+def read_json_file(json_path: str):
+        with open(json_path, 'r') as file:
+            print(f"reading {json_path}")
+            json_file = json.load(file)
+            return json_file
 
 def get_protocols_by_version(version_name: str, json_path:str) -> list:
-    json_file = None
-    with open(json_path,'r') as file:
-        json_file = json.load(file)
+    """
+    return a list with all protocols listed by the version
+    :param version_name:
+    :param json_path:
+    :return:
+    """
+    json_file = read_json_file(json_path)
     if json_file:
         protocols = json_file.get("protocols_by_version").get(version_name).get("protocols")
         return protocols
-    return None
+    return []
 
-def count_protocols_in_session(data_file_path):
+def count_protocols_in_session(data_file_path)-> dict:
+    """
+    :param data_file_path:
+    :return: a map with protocols name as key and appearances in session as value
+    """
     count_map = {}
     with open(data_file_path, 'r') as file:
         next(file)
@@ -30,22 +43,29 @@ def count_protocols_in_session(data_file_path):
     return count_map
 
 
-def get_frequency_for_protocol(protocol_json_path:str):
+def get_frequency_for_protocol(json_path:str)->dict:
+    """
+    :param json_path:
+    :return: a dict with protocol name as key and expected frequncy as value
+    """
     frequency = {}
     protocols = None
-    with open(protocol_json_path, 'r') as file:
-        json_file = json.load(file)
+    json_file = read_json_file(json_path)
     if json_file:
         protocols = json_file.get("protocols")
     for protocol_name, protocol_details in protocols.items():
         frequency[protocol_name] = frequency_map.get(str(protocol_details.get("fps")))
     return frequency
 
-def get_not_dynamics_protocols(protocol_json_path: str):
+def get_not_dynamics_protocols(json_path: str)->list:
+    """
+    return a list with all protocols (hexa) with false dynamic size
+    :param json_path:
+    :return:
+    """
     not_dynamics_protocols = []
     protocols = []
-    with open(protocol_json_path, 'r') as file:
-        json_file = json.load(file)
+    json_file = read_json_file(json_path)
     if json_file:
         protocols = json_file.get("protocols")
     for protocol_name, protocol_details in protocols.items():
